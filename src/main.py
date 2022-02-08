@@ -1,18 +1,42 @@
-# This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import logging
+import logging.config
+import datetime
 
+from pathlib import Path
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from core.utils.logformatter import LogFormatter
 
 
-# Press the green button in the gutter to run the script.
+# Configure logger first thing -- it is possible imports rely on a configured logger before main() is run.
+def setup_logger():
+    formatter = LogFormatter()
+    s = datetime.datetime.utcnow()
+    path = Path('./logs')
+    file = f'{path.absolute()}/object-rec_{s.year}-{s.month}-{s.day}-{s.hour}{s.minute}{s.second}.log'
+
+    # Create log directory if it doesn't exist
+    if not path.exists():
+        path.mkdir()
+
+    # Log to file...
+    logging.basicConfig(filename=file, format=formatter.log_fmt, level=logging.DEBUG)
+
+    # Log to console as well...
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    console.setFormatter(LogFormatter())
+    logging.getLogger('').addHandler(console)
+
+
+setup_logger()
+logger = logging.getLogger('main')  # Main is unique. All other files start with ...getLogger(__name__)
+logger.debug('Logger initialized.')
+
+
+def main():
+    logger.info('Welcome to Object Recognizer!')
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
