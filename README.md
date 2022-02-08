@@ -58,4 +58,3 @@ Note: Incompatible arguments will cause the application not to run. For example,
 -v|✅|✅|✅|✅|✅|✅|✔️
 
 
-webhook test post. please ignore.
