@@ -1,4 +1,3 @@
-
 import logging
 import logging.config
 import datetime
@@ -12,7 +11,7 @@ from core.utils.logformatter import LogFormatter
 def setup_logger():
     formatter = LogFormatter()
     s = datetime.datetime.utcnow()
-    path = Path('./logs')
+    path = Path('../logs')  # Lives one directory above /src.
     file = f'{path.absolute()}/object-rec_{s.year}-{s.month}-{s.day}-{s.hour}{s.minute}{s.second}.log'
 
     # Create log directory if it doesn't exist
