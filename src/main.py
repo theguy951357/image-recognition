@@ -1,6 +1,7 @@
+import datetime
 import logging
 import logging.config
-import datetime
+import sys
 
 from pathlib import Path
 
@@ -33,8 +34,12 @@ logger = logging.getLogger('main')  # Main is unique. All other files start with
 logger.debug('Logger initialized.')
 
 
+from core import config
+
+
 def main():
-    logger.info('Welcome to Object Recognizer!')
+    logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
+    logger.info(f'Loaded with configuration: {config}')
 
 
 if __name__ == '__main__':
