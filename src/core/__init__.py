@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 def parse_args(args):
     """Takes a set of arguments from the CLI and parses them."""
-    if args is None:
-        raise ValueError('Expected program arguments, received None.')
+    if args is None or not isinstance(args, list) or len(args) == 0:
+        raise ValueError('Expected program arguments, received None or invalid configuration.')
 
     desc = """Object Classifier, created by Harry Burnett, Chris Blaha, Jaydin Andrews, 
     and Matt Collins. The objective of this utility is to recognize everyday objects from 
@@ -38,8 +38,8 @@ def parse_args(args):
     parser.add_argument('-t', '--train', help='Path to image folder to train the model from. This also sets the '
                                               'application into a training configuration.', metavar='PATH',
                         required=False)
-    parser.add_argument('-e', '--epochs', help='Number of Tensorflow epochs to use in the training. Default is 10.',
-                        metavar='N', type=int, default=10, choices=[x for x in range(1, 100)], required=False)
+    parser.add_argument('-e', '--epochs', help='Number of Tensorflow epochs to use in the training. Default is 0.',
+                        metavar='N', type=int, default=0, choices=[x for x in range(1, 100)], required=False)
     parser.add_argument('-v', '--verbose', help='Verbose logging.', action='store_true', required=False)
 
     return parser.parse_args(args)
@@ -66,36 +66,11 @@ def default_name(out_path, is_image_mode):
     return base
 
 
-def validate_args(a):
-    """
-    Validates all parsed arguments for compatibility.
-
-    :a: Parsed arguments
-    :return: True if valid, False if not.
-    """
-    logger.debug('Validating arguments...')
-    if (a.image or a.model) and (a.train or a.epochs != 0):
-        logger.critical('Validation failed: Conflict between image and training mode. Ensure only one of those have a '
-                        'value.')
-        return False
-
-    p = Path(a.out)
-    if not p.is_dir():
-        logger.critical('Validation failed: --out path is not a directory.')
-
-
-def init_config():
+def init_config(args=None):
     """Generates a config from all user-defined CLI arguments."""
-    args = sys.argv[1:]
+    if args is None:
+        args = sys.argv[1:]
+
     parsed = parse_args(args)
+    return Config.from_parsed_args(parsed)
 
-    if not validate_args(parsed):
-        logger.critical('Incompatible arguments. Please refer to https://github.com/theguy951357/image-recognition '
-                        'for more information.')
-        raise ValueError
-
-    return Config(image=parsed.image, model=parsed.model, name=parsed.name, out=parsed.out,
-                  train=parsed.train, epochs=parsed.epochs)
-
-
-config = init_config()
