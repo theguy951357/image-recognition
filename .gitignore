@@ -1,5 +1,6 @@
 # === START CUSTOM ===
 logs/
+*.swp
 # === END CUSTOM ===
 
 # === START TEMPLATE ===
