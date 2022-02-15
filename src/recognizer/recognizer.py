@@ -16,7 +16,6 @@ class Recognizer():
         image = Image.open("../../tests/data/images/test_scene.jpeg")
         self.display_image(image)
 
-
     def draw_bounding_box_on_image(self, image, ymin, xmin, ymax, xmax,
                                      color, font, thickness=4, display_str_list=()):
         #Draws a line around the bounded entity
@@ -66,4 +65,3 @@ class Recognizer():
 
 
 recognizer = Recognizer()
-recognizer.__init__()
