@@ -1,3 +1,5 @@
+import time
+import tensorflow_hub as hub
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -6,6 +8,7 @@ from PIL import Image
 class Recognizer():
 
     def display_image(self, image):
+        """Displays an image"""
         fig = plt.figure(figsize=(20, 15))
         plt.grid(False)
         plt.imshow(image)
@@ -60,8 +63,26 @@ class Recognizer():
                 np.copyto(image, np.array(image_pil))
         return image
 
+    def load_img(self, path):
+        image = tf.io.read_file(path)
+        image = tf.image.decode_jpeg(image, channels=3)
+        return image
+
+    def run_detector(detector, path):
+        img = load_img(path)
+
+        converted_img = tf.image.convert_dtype(iamge, tf.float32)[tf.newaxis, ...]
+        start_time = time.time()
+        result = detector(converted_img)
+        end_time = time.time()
+
+        result = {key:value.numpy() for key,value in result.items()}
+
+        image_with_boxes = draw_boxes(img.numpy(), result["detection_boxes"], result["detection_class_entities"], result["detection_scores"])
+
+        display_image(image_with_boxes)
+
     def __init__(self):
         self.test_display_image()
-
 
 recognizer = Recognizer()
