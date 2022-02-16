@@ -1,9 +1,11 @@
 import time
+import logging
 import tensorflow_hub as hub
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 
+logger = logging.getLogger(__name__)
 
 class Recognizer():
 
@@ -78,9 +80,8 @@ class Recognizer():
 
         result = {key:value.numpy() for key,value in result.items()}
 
-        print('Found {0} objects.'.format(len(result["detection_scores"])))
-        print('Inference time: {0}'.format(end_time-start_time))
-
+        logger.info('Found {0} objects!'.format(len(result["detection_scores"])))
+        logger.info('Inference time: {0}'.format(end_time - start_time))
 
         image_with_boxes = draw_boxes(img.numpy(), result["detection_boxes"], result["detection_class_entities"], result["detection_scores"])
 
