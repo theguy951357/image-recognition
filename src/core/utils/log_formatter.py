@@ -1,6 +1,7 @@
 import logging
 
 
+# noinspection SpellCheckingInspection
 class LogFormatter(logging.Formatter):
     """Formats log output to uniform format."""
     grey = "\x1b[38;2;170;170;170m"
