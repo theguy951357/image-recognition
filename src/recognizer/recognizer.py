@@ -80,8 +80,9 @@ class Recognizer():
 
         result = {key:value.numpy() for key,value in result.items()}
 
-        logger.info('Found {0} objects!'.format(len(result["detection_scores"])))
-        logger.info('Inference time: {0}'.format(end_time - start_time))
+        object_count = len(result["detection_scores"])
+        logger.debug(f'Found {object_count} objects!')
+        logger.debug(f'Inference time: {end_time - start_time}')
 
         image_with_boxes = draw_boxes(img.numpy(), result["detection_boxes"], result["detection_class_entities"], result["detection_scores"])
 
