@@ -50,7 +50,7 @@ def display_image(image):
 # TODO: Move to testing suite
 def test_display_image():
     logger.info('Displaying test image')
-    image = Image.open("../../tests/data/images/test_scene.jpeg")
+    image = Image.open("../../../tests/data/images/test_scene.jpeg")
     display_image(image)
 
 
