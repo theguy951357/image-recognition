@@ -41,9 +41,25 @@ from core import init_config
 config = init_config()
 
 
+def ls_tf_devices():
+    """Displays all devices tensorflow has access to.
+    If both 'CPU' and 'GPU' are listed in the output,
+    that means tensorflow has access to GPU accelerated training."""
+    import tensorflow as tf
+
+    # Check for TensorFlow GPU access
+    logger.info(f"TensorFlow has access to the following devices:\n{tf.config.list_physical_devices()}")
+
+    # See TensorFlow version
+    logger.info(f"TensorFlow version: {tf.__version__}")
+
+
 def main():
     logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
     logger.info(f'Loaded with configuration: {config}')
+
+    if config.is_train_mode:
+        ls_tf_devices()
 
 
 if __name__ == '__main__':
