@@ -22,7 +22,6 @@ class Config:
         return f'Config(image={self.image}, model={self.model}, name={self.name}, train={self.train}, ' \
                f'epochs={self.epochs}, out={self.out}) | [Image Mode: {self.is_image_mode}]'
 
-
     @classmethod
     def from_parsed_args(cls, p):
         """
