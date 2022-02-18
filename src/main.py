@@ -5,7 +5,7 @@ import sys
 
 from pathlib import Path
 
-from core.utils.logformatter import LogFormatter
+from core.utils.log_formatter import LogFormatter
 
 
 # Configure logger first thing -- it is possible imports rely on a configured logger before main() is run.
