@@ -1,20 +1,43 @@
+import kwargs as kwargs
 import tensorflow as tf
 from keras.layers import Dense, Flatten, Conv2D
 from keras import Model
 
 """access the datasets here"""
-#MNIST is just here as a placeholder. it will access our images instead
-# TODO have the model pull out images and not from MNIST
 
-mnist = tf.keras.datasets.mnist
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_train, x_test = x_train/255.0, x_test/255.0
+# TODO have the model pull our images.
+
+#path to directory
+directory = 0
+#from keras.io/api/data_loading/image site has info on each parameter for that method
+#kwargs package needed to install to run this method.
+(x_train, y_train), (x_test, y_test) = tf.keras.utils.image_dataset_from_directory(
+    directory,
+    labels="inferred",
+    label_mode="int",
+    class_names=None,
+    color_mode="rgb",
+    batch_size=32,
+    image_size=(256,256),
+    shuffle=True,
+    seed=None,
+    validation_split=None,
+    subset=None,
+    interpolation="bilinear",
+    follow_links=False,
+    crop_to_aspect_ratio=False,
+    **kwargs
+)
+"""it looks like the image_dataset_from_directory method call covers
+the next four lines of code. I'm going to keep them here
+commented out in case I end up needing them."""
+#(x_train, y_train), (x_test, y_test) = mnist.load_data()
+#x_train, x_test = x_train/255.0, x_test/255.0
 
 #channels dimension
-x_train = x_train[..., tf.newaxis].astype("float32")
-x_test = x_test[..., tf.newaxis].astype("float32")
+#x_train = x_train[..., tf.newaxis].astype("float32")
+#x_test = x_test[..., tf.newaxis].astype("float32")
 
-#batch and shuffle may or may not be necessary if our data is already split up. might wanna use choose_from_datasets instead of from_tensor_slices
 train_ds = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(10000).batch(32)
 
 test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
