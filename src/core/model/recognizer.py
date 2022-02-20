@@ -42,7 +42,9 @@ def draw_bounding_box_on_image(image, y_min, x_min, y_max, x_max, color, font, t
 def display_image(image):
     """Displays an image"""
     # TODO: Fig is not used. Jay, please resolve such that the plot will display correctly.
-    """the tutorial this came from had the same thing. I think the tutorial meant to put fig instead of plt on the rest of the method. hopefully changing it to fig will work"""
+    # the tutorial this came from had the same thing.
+    # I think the tutorial meant to put fig instead of plt on the rest of the method.
+    # hopefully changing it to fig will make it play nice
     fig = plt.figure(figsize=(20, 15))
     fig.grid(False)
     fig.imshow(image)
@@ -66,7 +68,14 @@ def draw_boxes(image, boxes, class_names, scores, max_boxes=10, min_score=0.1):
             display_str = "{}: {}%".format(class_names[i].decode("ascii"), int(100 * scores[i]))
             color = colors[hash(class_names[i]) % len(colors)]
             image_pil = Image.fromarray(np.uint8(image)).convert("RGB")
-            draw_bounding_box_on_image(image_pil, y_min, x_min, y_max, x_max, color, font, display_str_list=[display_str])
+            draw_bounding_box_on_image(image_pil,
+                                       y_min,
+                                       x_min,
+                                       y_max,
+                                       x_max,
+                                       color,
+                                       font,
+                                       display_str_list=[display_str])
 
             # BUG: image_pil cannot be converted into anything that a numpy array takes as input.
             # TODO: Jay, please resolve.
