@@ -1,22 +1,30 @@
+import logging
 from abc import ABC
+from pathlib import Path
 
 import kwargs as kwargs
 import tensorflow as tf
-from keras.layers import Dense, Flatten, Conv2D, SpatialDropout2D
 from keras import Model
-import logging
+from keras.layers import Dense, Flatten, Conv2D, SpatialDropout2D
+
+from src.main import config  # Not sure if we should move this somewhere else (to avoid referencing src.main)
+from ..utils.invalid_config_error import InvalidConfigError
 
 logger = logging.getlogger(__name__)
 
 # access the datasets here
 # TODO have the model pull our images.
 
-# path to directory
-directory = 0
+if not config.is_train_mode:
+    logging.critical(f'Cannot execute training. Config is not set to training mode.')
+    raise InvalidConfigError()
+
+directory = Path(config.train)  # Parsed from program args (-t /some/dir). Can be absolute or relative.
+
 """from keras.io/api/data_loading/image site has info on each 
 parameter for the image_dataset_from_directory
 This method should pull the image dataset from our directory"""
-# kwargs package needed to install to run this method.
+# kwargs package must be installed to run this method.
 (x_train, y_train), (x_test, y_test) = tf.keras.utils.image_dataset_from_directory(
     directory,
     labels="inferred",
@@ -98,6 +106,7 @@ train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy
 test_loss = tf.keras.metrics.Mean(name='test_loss')
 test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
+
 # tf.GradientTape will train the model
 
 
@@ -114,6 +123,7 @@ def train_step(train_images, train_labels):
     train_loss(loss)
     train_accuracy(train_labels, predictions)
 
+
 # testing the model
 
 
@@ -127,28 +137,27 @@ def test_step(testing_images, testing_labels):
     test_loss(t_loss)
     test_accuracy(testing_labels, predictions)
 
-# This will be set to the parameter set in the config.
 
+def train():
+    epochs = config.epochs
+    for i in range(epochs):
+        # reset at each epoch
+        train_loss.reset_states()
+        train_accuracy.reset_states()
+        test_loss.reset_states()
+        test_accuracy.reset_states()
 
-EPOCHS = 10
+        for images, labels in train_ds:
+            train_step(images, labels)
 
-for epoch in range(EPOCHS):
-    # reset at each epoch
-    train_loss.reset_states()
-    train_accuracy.reset_states()
-    test_loss.reset_states()
-    test_accuracy.reset_states()
+        for test_images, test_labels in test_ds:
+            test_step(test_images, test_labels)
 
-    for images, labels in train_ds:
-        train_step(images, labels)
-
-    for test_images, test_labels in test_ds:
-        test_step(test_images, test_labels)
-
-    print(
-        f'Epoch {epoch +1}'
-        f'Loss: {train_loss.result()}'
-        f'Accuracy: {train_accuracy.result() * 100}'
-        f'Test Loss: {test_loss.result()}'
-        f'Test Accuracy: {test_accuracy.result() * 100}'
-    )
+        logger.info(
+            '[TRAINING STATUS] '
+            f'Epoch {i + 1} | '
+            f'Loss: {train_loss.result()} | '
+            f'Accuracy: {train_accuracy.result() * 100} | '
+            f'Test Loss: {test_loss.result()} | '
+            f'Test Accuracy: {test_accuracy.result() * 100}'
+        )
