@@ -2,6 +2,7 @@ import datetime
 import logging
 import logging.config
 import sys
+import tensorflow as tf
 
 from pathlib import Path
 
@@ -36,8 +37,8 @@ setup_logger()
 logger = logging.getLogger('main')  # Main is unique. All other files start with ...getLogger(__name__)
 logger.debug('Logger initialized.')
 
-
 from core import init_config
+
 config = init_config()
 
 
@@ -45,13 +46,18 @@ def ls_tf_devices():
     """Displays all devices tensorflow has access to.
     If both 'CPU' and 'GPU' are listed in the output,
     that means tensorflow has access to GPU accelerated training."""
-    import tensorflow as tf
 
+    logger.info("Checking TensorFlow for hardware access. (Do you see 'GPU'?)...")
     # Check for TensorFlow GPU access
     logger.info(f"TensorFlow has access to the following devices:\n{tf.config.list_physical_devices()}")
 
     # See TensorFlow version
     logger.info(f"TensorFlow version: {tf.__version__}")
+
+
+def test_cnn():
+    import core.model.cnn as cnn
+    cnn.train()
 
 
 def main():
@@ -60,6 +66,7 @@ def main():
 
     if config.is_train_mode:
         ls_tf_devices()
+        test_cnn()
 
 
 if __name__ == '__main__':
