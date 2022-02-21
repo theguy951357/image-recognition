@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from .utils.invalid_config_error import InvalidConfigError
 
 from datetime import datetime
 from pathlib import Path
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 def parse_args(args):
     """Takes a set of arguments from the CLI and parses them."""
     if args is None or not isinstance(args, list) or len(args) == 0:
-        raise ValueError('Expected program arguments, received None or invalid configuration.')
+        raise InvalidConfigError('Expected program arguments, received None or invalid configuration.')
 
     desc = """Object Classifier, created by Harry Burnett, Chris Blaha, Jaydin Andrews, 
     and Matt Collins. The objective of this utility is to recognize everyday objects from 
@@ -35,8 +36,9 @@ def parse_args(args):
     parser.add_argument('-o', '--out', help='Folder location for output. Used with -i. Default is ./out/ for '
                                             'classification mode and ./models/ for training mode.', default='./out/',
                         metavar='DIR', required=False)
-    parser.add_argument('-t', '--train', help='Path to image folder to train the model from. This also sets the '
-                                              'application into a training configuration.', metavar='PATH',
+    parser.add_argument('-t', '--train', '--train_dir', help='Path to image folder to train the model from. '
+                                                             'This also sets the application into a training '
+                                                             'configuration.', metavar='IMAGE_DIRECTORY_PATH',
                         required=False)
     parser.add_argument('-e', '--epochs', help='Number of Tensorflow epochs to use in the training. Default is 0.',
                         metavar='N', type=int, default=0, choices=[x for x in range(1, 100)], required=False)
