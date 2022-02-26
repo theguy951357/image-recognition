@@ -4,9 +4,6 @@ services:
   app:
     build:
       context: .
-      args:
-        image_dir: images
-        verbose: True
     depends_on:
       - db
     networks:
