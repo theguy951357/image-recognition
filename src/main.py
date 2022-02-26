@@ -7,6 +7,7 @@ import tensorflow as tf
 from pathlib import Path
 
 from core.utils.log_formatter import LogFormatter
+from core.manipulation import Manipulator
 
 
 # Configure logger first thing -- it is possible imports rely on a configured logger before main() is run.
@@ -55,18 +56,15 @@ def ls_tf_devices():
     logger.info(f"TensorFlow version: {tf.__version__}")
 
 
-def test_cnn():
-    import core.model.cnn as cnn
-    cnn.train()
-
-
 def main():
     logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
     logger.info(f'Loaded with configuration: {config}')
 
-    if config.is_train_mode:
-        ls_tf_devices()
-        test_cnn()
+    ls_tf_devices()
+
+    logger.info('Begin image labeling.')
+    manipulator = Manipulator(config)
+    manipulator.export()
 
 
 if __name__ == '__main__':
