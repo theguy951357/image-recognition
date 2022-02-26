@@ -1,7 +1,33 @@
 # Object Classification
 Object classification software (CSCI 338 Final Project)
 
-## CLI
+## Configure Installation
+### Windows
+Install [miniconda](https://docs.conda.io/en/latest/miniconda.html) (there are .exe download links there). Make sure to select the option that allows for IDEs to auto-detect the conda install. It should warn you in red letters if you try to un-check it.
+
+Install all prerequisites shown [here](https://www.tensorflow.org/install/gpu) under the "Software Requirements" section (drivers, CUDA, etc.). You will need to create an account for the Nvidia CUDA download. Leave this tab open, you'll need it again later.
+
+After all software from the Tensorflow GPU page is installed, download the `cudnn64_8.dll` from [here](https://www.dll-files.com/download/dae6bbb218bc4091223a48a97b6eba4b/cudnn64_8.dll.html?c=UWVyZGMrUEdoamJVRWhiQlNKaXJsZz09) and move it into your `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin` folder (replace `11.6` with your version if it differs).
+
+Revisit the Tensorflow GPU tab and follow the instructions at the bottom for configuring your PATH. Execute the commands in a standard Windows command prompt, not PowerShell.
+
+**Reboot**
+
+Now, Open the Anaconda (Miniconda3) prompt (available via Windows search).
+
+Execute the following to configure the new environment. Run from the root directory of this project.
+
+`conda create -n object-recognition python=3.9`
+
+`conda activate object-recognition`
+
+`pip install -r requirements.txt`
+
+You are now able to setup PyCharm to run through Miniconda (default directory is `C:\Users\<you>\miniconda3`)
+
+
+## Usage
+### CLI
 This program is a console-based Python application, so a CLI is used for all program functions. The program can be executed with any of the following arguments.
 
 **NOTE:** `-i` and `-t` are **incompatible.** Read below for further details.
