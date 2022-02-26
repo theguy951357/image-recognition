@@ -1,3 +1,4 @@
+FROM tensorflow:latest-gpu
 FROM continuumio/miniconda3
 
 ENV FIFTYONE_DATABASE_URI "mongodb://image-recognition-db-1"
