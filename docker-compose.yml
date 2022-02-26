@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        image_dir: images
+        verbose: True
+    depends_on:
+      - db
+    networks:
+      - object-recognition
+    volumes:
+      - ./images:/app/images
+      - ./out:/app/out
+  db:
+    image: mongo:4.4.12
+    networks:
+      - object-recognition
+
+networks:
+  object-recognition:
+
