@@ -1,11 +1,14 @@
 import datetime
 import logging
 import logging.config
+import os
 import sys
+import tensorflow as tf
 
 from pathlib import Path
 
 from core.utils.log_formatter import LogFormatter
+from core.manipulation import Manipulator
 
 
 # Configure logger first thing -- it is possible imports rely on a configured logger before main() is run.
@@ -36,14 +39,33 @@ setup_logger()
 logger = logging.getLogger('main')  # Main is unique. All other files start with ...getLogger(__name__)
 logger.debug('Logger initialized.')
 
-
 from core import init_config
+
 config = init_config()
+
+
+def ls_tf_devices():
+    """Displays all devices tensorflow has access to.
+    If both 'CPU' and 'GPU' are listed in the output,
+    that means tensorflow has access to GPU accelerated training."""
+
+    logger.info("Checking TensorFlow for hardware access. (Do you see 'GPU'?)...")
+    # Check for TensorFlow GPU access
+    logger.info(f"TensorFlow has access to the following devices:\n{tf.config.list_physical_devices()}")
+
+    # See TensorFlow version
+    logger.info(f"TensorFlow version: {tf.__version__}")
 
 
 def main():
     logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
     logger.info(f'Loaded with configuration: {config}')
+
+    ls_tf_devices()
+
+    logger.info('Begin image labeling.')
+    manipulator = Manipulator(config)
+    manipulator.export()
 
 
 if __name__ == '__main__':
