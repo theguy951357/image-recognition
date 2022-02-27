@@ -63,9 +63,6 @@ def main():
 
     ls_tf_devices()
 
-    # logger.info('Installing ETA models')
-    # os.system('eta install models')
-
     logger.info('Begin image labeling.')
     manipulator = Manipulator(config)
     manipulator.export()
