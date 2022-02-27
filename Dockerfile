@@ -1,21 +1,46 @@
-FROM continuumio/anaconda3
+# Latest LTS
+FROM ubuntu:latest
 
-ENV FIFTYONE_DATABASE_URI "mongodb://object-recognition-db-1"
-
+# Copy program files
 COPY . /app
 WORKDIR /app
 
+# Install base utilities
+RUN apt update
+RUN apt install -y build-essential \
+    && apt install -y wget \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install miniconda
+ENV CONDA_DIR /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.11.0-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/conda
+
+# Put conda in path so we can use conda activate
+ENV PATH=$CONDA_DIR/bin:$PATH
+
+# Setup conda environment
+RUN conda create -n object-recognition python=3.9
+ENV PATH /opt/conda/envs/object-recognition/bin:$PATH
+
+# Reload the shell
+RUN /bin/bash -c "source activate object-recognition"
+
+# Upgrade conda and install necessary packages
 RUN conda update conda
 RUN conda upgrade conda
 RUN conda install psutil
 
 RUN pip install --upgrade pip
-
-RUN pip install tensorflow
-RUN pip install tensorflow-gpu
+RUN pip install tensorflow==2.8.0
+# Fiftyone
 RUN pip install fiftyone
 
-RUN eta install models
+# Required for fiftyone to work as the model above is from TF2 Model Zoo
+# RUN eta install models
+
+ENV FIFTYONE_DATABASE_URI "mongodb://object-recognition-db-1"
 
 # Requires an 'images' directory be present in the project root.
 # By default, this is standard behavior. Docker compose handles this
@@ -23,4 +48,4 @@ RUN eta install models
 # to the container's app/images directory.
 
 # The same is true for ./out
-CMD ["python3", "src/main.py", "-v"]
+CMD ["conda", "run", "-n", "object-recognition", "python", "src/main.py", "-v"]

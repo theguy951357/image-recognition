@@ -1,6 +1,7 @@
 import datetime
 import logging
 import logging.config
+import os
 import sys
 import tensorflow as tf
 
@@ -61,6 +62,9 @@ def main():
     logger.info(f'Loaded with configuration: {config}')
 
     ls_tf_devices()
+
+    logger.info('Installing ETA models')
+    os.system('eta install models')
 
     logger.info('Begin image labeling.')
     manipulator = Manipulator(config)
