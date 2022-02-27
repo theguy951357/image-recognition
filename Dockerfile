@@ -1,5 +1,5 @@
 # Latest LTS
-FROM ubuntu:latest
+FROM --platform=linux/amd64 ubuntu:latest
 
 # Copy program files
 COPY . /app
@@ -19,6 +19,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.11.0-Linu
 
 # Put conda in path so we can use conda activate
 ENV PATH=$CONDA_DIR/bin:$PATH
+ENV FIFTYONE_DATABASE_URI "mongodb://object-recognition-db-1"
 
 # Setup conda environment
 RUN conda create -n object-recognition python=3.9
@@ -33,14 +34,10 @@ RUN conda upgrade conda
 RUN conda install psutil
 
 RUN pip install --upgrade pip
-RUN pip install tensorflow==2.8.0
-# Fiftyone
-RUN pip install fiftyone
+RUN pip install --default-timeout=100 -r requirements.txt
 
 # Required for fiftyone to work as the model above is from TF2 Model Zoo
-# RUN eta install models
-
-ENV FIFTYONE_DATABASE_URI "mongodb://object-recognition-db-1"
+RUN eta install models
 
 # Requires an 'images' directory be present in the project root.
 # By default, this is standard behavior. Docker compose handles this
