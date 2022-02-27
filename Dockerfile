@@ -1,20 +1,19 @@
-FROM tensorflow:latest-gpu
-FROM continuumio/miniconda3
+FROM continuumio/anaconda3
 
-ENV FIFTYONE_DATABASE_URI "mongodb://image-recognition-db-1"
+ENV FIFTYONE_DATABASE_URI "mongodb://object-recognition-db-1"
 
 COPY . /app
 WORKDIR /app
 
-# Required for psutil build
-RUN apt-get update -y && apt-get install -y gcc
-
-RUN pip3 install -U pip
-RUN conda install psutil
-RUN pip3 install fiftyone
-
 RUN conda update conda
-RUN conda install tensorflow
+RUN conda upgrade conda
+RUN conda install psutil
+
+RUN pip install --upgrade pip
+
+RUN pip install tensorflow
+RUN pip install tensorflow-gpu
+RUN pip install fiftyone
 
 RUN eta install models
 
@@ -24,4 +23,4 @@ RUN eta install models
 # to the container's app/images directory.
 
 # The same is true for ./out
-CMD ["python3", "src/main.py", "images", "-v"]
+CMD ["python3", "src/main.py", "-v"]
