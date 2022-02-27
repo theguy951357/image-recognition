@@ -13,9 +13,6 @@ logger = logging.getLogger(__name__)
 
 def parse_args(args):
     """Takes a set of arguments from the CLI and parses them."""
-    if args is None or not isinstance(args, list) or len(args) == 0:
-        raise InvalidConfigError('Expected program arguments, received None or invalid configuration.')
-
     desc = """Object Classifier, created by Harry Burnett, Chris Blaha, Jaydin Andrews, 
     and Matt Collins. The objective of this utility is to recognize everyday objects from 
     everyday scenes. Load a directory of images and the software will produce an output directory 
@@ -23,11 +20,10 @@ def parse_args(args):
 
     parser = argparse.ArgumentParser(description=desc)
 
-    parser.add_argument('image_dir', help='Absolute or relative file path of image to process for object recognition.',
-                        metavar='DIR_PATH')
+    parser.add_argument('-i', '--image_dir', help='Absolute or relative file path of image to process for object recognition.',
+                        metavar='DIR_PATH', required=False, default='./images/')
     parser.add_argument('-o', '--out_dir', help='Folder location for output. Default is ./out/',
-                        default='./out/',
-                        metavar='DIR', required=False)
+                        default='./out/', metavar='DIR', required=False)
     parser.add_argument('-v', '--verbose', help='Verbose logging.', action='store_true', required=False, default=False)
 
     return parser.parse_args(args)
