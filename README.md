@@ -16,10 +16,8 @@ This program is a console-based Python application, so a CLI is used for all pro
 (Help)
 -h / --help - Display help prompt and all arguments.
 
-(Required for image mode.)
-image_dir -- Absolute or relative file path of image to process for object recognition. (Default = ./images)
-
 (Optional)
+-i -- Absolute or relative file path of image to process for object recognition. (Default = ./images)
 -o / --out - Folder location for output. Used with -i. Default is ./out/ for image mode and ./models/ for training mode.
 -v / --verbose - Verbose logging
 ```
@@ -27,9 +25,9 @@ image_dir -- Absolute or relative file path of image to process for object recog
 ### Possible Configurations
 **Standard Use**
 
-Use `-i` to activate image mode. Point to an image's file path to import it into the program. A specific model path may be specified for which to classify the objects in the image from.
+Load an image into `image-recognition/images` and run the program (make sure to run from the `image-recognition` directory).
 
-`python3 main.py -i path/to/image -o path/to/out`
+`python3 main.py -i path/to/images -o path/to/out`
 
 **Debugging**
 
