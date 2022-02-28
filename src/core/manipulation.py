@@ -24,7 +24,8 @@ class Manipulator:
 
     def load_model(self, attempted=False):
         try:
-            return foz.load_zoo_model("centernet-resnet50-v2-512-coco-tf2")
+            return foz.load_zoo_model("ssd-inception-v2-coco-tf")
+
         except (ModuleNotFoundError, ImportError) as e:
             if attempted:
                 raise e
@@ -41,8 +42,9 @@ class Manipulator:
             {
                 "font_size": 14,
                 "bbox_linewidth": 3,
-                "show_all_confidences": True,
-                "per_object_label_colors": True
+                "bbox_alpha": 0.82,
+                "per_object_label_colors": True,
+                "show_object_confidences": True,
             }
         )
         self.image_dataset.draw_labels(self.config.out_dir, label_fields=None, config=cfg)
