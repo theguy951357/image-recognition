@@ -61,6 +61,11 @@ def main():
     logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
     logger.info(f'Loaded with configuration: {config}')
 
+    try:
+        os.system('mkdir images videos out')
+        logger.info('Created folders: ./images ./videos ./out')
+    except Exception:
+        logger.warning('Failed to create directories: ./images ./videos ./out -- permission errors are possible.')
     ls_tf_devices()
 
     logger.info('Begin image labeling.')
