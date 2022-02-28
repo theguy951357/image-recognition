@@ -1,49 +1,115 @@
-# Object Classification
-Object classification software (CSCI 338 Final Project)
+# Object Recognizer
+Object Recognizer software (CSCI 338 Final Project).
+- Utilizes [FiftyOne](https://github.com/voxel51/fiftyone), an open-source computer vision wrapper, to identify common objects in scenes and label them for viewing (based on pre-trained COCO models).
 
-## CLI
+## Usage
+__**👮 Prerequisites**__
+- [Docker](https://docs.docker.com/get-docker/) or virtual environment properly configured.
+- [NVIDIA Docker Driver](https://github.com/NVIDIA/nvidia-docker/wiki/Frequently-Asked-Questions#how-do-i-install-the-nvidia-driver) (if on Linux with an NVIDIA GPU)
+- (For GPU Acceleration) An NVIDIA GPU with the latest driver installed.
+
+__**⚠️ Important Notes**__
+- The source code does not run on Windows in the application's current state due to 
+FiftyOne's dependency on [eta](https://pypi.org/project/voxel51-eta/). The application
+functions completely through Docker for this reason, which runs a lightweight Linux environment. The source *does* run on Linux and MacOS (including M1, if `tensorflow-deps`, `tensorflow-macos` and `tensorflow-metal` are present, more details below).
+- The reason code does not run on Windows is due to the `eta install models` function being Linux and MacOS specific. WSL2 is untested, however, so if a correct virtual environment were to be configured through WSL2, it is likely the application will run outside of the containerized environment.
+- `./images` and `./out` are linked to the Docker container through a volume. Any images placed in the host machine's `./images` directory will be processed by the object recognizer, despite the virtualization, and will have the output placed in the host machine's `./out` directory.
+- This program will execute without a GPU.
+- It is **strongly** encouraged to run all below commands through WSL2 if on Windows. More info [here](https://docs.microsoft.com/en-us/windows/wsl/install).
+- It is **not** recommended to run the application with different program arguments through docker as environment variables are not supported. Verbose logging is enabled by default in the Dockerfile.
+
+### 🐋 Run with Docker
+First, build the image.
+```
+docker build --no-cache -t object-recognizer:latest .
+```
+
+Then, run it.
+
+__System with NVIDIA GPU__
+```
+docker run -it --rm --gpus all -v $(pwd)/images:/app/images -v $(pwd)/videos:/app/videos -v $(pwd)/out:/app/out object-recognizer:latest
+```
+
+__System without GPU__
+```
+docker run -it --rm -v $(pwd)/images:/app/images -v $(pwd)/videos:/app/videos -v $(pwd)/out:/app/out object-recognizer:latest
+```
+
+### Run from source (Linux, MacOS, and WSL2 [untested] Only)
+Clone the repository
+```
+git clone https://github.com/theguy951357/image-recognition.git
+cd image-recognition
+```
+
+Install [Miniconda3](https://docs.conda.io/en/latest/miniconda.html)
+
+Configure the virtual environment
+```
+conda create -n image-recognition
+conda activate image-recognition python=3.9
+pip install -r requirements.txt
+```
+
+Install necessary models
+```
+eta install models
+```
+
+For MacOS Only:
+```
+conda install -c apple tensorflow-macos
+pip install tensorflow-deps
+```
+
+For MacOS with ARM (M1) (in addition to the above MacOS commands):
+- ```
+  pip install tensorflow-metal
+  ```
+- Configure this environment variable (to override a "missing GPU" false-positive):
+- ```
+  FIFTYONE_REQUIREMENT_ERROR_LEVEL=2
+  ```
+
+Your virtual environment should now be configured with your IDE to run/debug code. In any case, run `python src/main.py` to launch the program. Feel free to use the CLI when running from source.
+
+
+### CLI
+- **Note:** Although CLI functionality is supported, running program arguments through Docker is **not** recommended.
+
 This program is a console-based Python application, so a CLI is used for all program functions. The program can be executed with any of the following arguments.
 
-**NOTE:** `-i` and `-t` are **incompatible.** Read below for further details.
 ```
 (Help)
 -h / --help - Display help prompt and all arguments.
 
-(Required for image mode.)
--i / --image - Absolute or relative file path of image to process for object recognition.
-
-(Required for training mode. -i and -t are incompatible.)
--t / --train - Path to image folder to train the model from. This also sets the application into a training configuration.
-
-(Optional / Debug)
--m / --model - File location of the model to use for object classification. If omitted, will use ./models/default.pb -- Application will not run if this file or directory is missing.
--n / --name - Name of the output image file. Default is output-# where # is the number of output files already present in the directory for image mode. Default output for model mode if model-#. Do not specify a file-type at the end of the name as it will be ignored.
+(Optional)
+-i -- Absolute or relative file path of image to process for object recognition. (Default = ./images)
 -o / --out - Folder location for output. Used with -i. Default is ./out/ for image mode and ./models/ for training mode.
--e / --epochs - Number of Tensorflow epochs to use in the training. Default is 10.
 -v / --verbose - Verbose logging
 ```
-
-### Possible Configurations
 **Standard Use**
 
-Use `-i` to activate image mode. Point to an image's file path to import it into the program. A specific model path may be specified for which to classify the objects in the image from.
+Load an image into `image-recognition/images` and run the program (make sure to run from the `image-recognition` directory).
 
-`python3 main.py -i path/to/image -o path/to/out`
-
-`python3 main.py -i path/to/image -o path/to/out -m ./models/my-model.pb -n my-name`
-
-**Model Training**
-
-Use `-t` to activate model training mode. Point to a directory for training data.
-
-`python3 main.py -t image/dir`
-
-`python3 main.py -t another/image/dir -o my/model/dir -e 20 -n my-model`
+`python3 main.py -i path/to/images -o path/to/out`
 
 **Debugging**
 
 *Use any configuration with `-v` for verbose logging.*
 
-Note: Incompatible arguments will cause the application not to run. For example, the following would **NOT** work as the application would be trying to train and produce a result at the same time, which is incompatible behavior.
 
-`python3 main.py -i path/to/image -o path/to/out -t my/image/dir -e 15`.
+### Issues
+- If you get any error related to mongodb, execute the following steps.
+
+Launch a docker instance of MongoDB
+```
+docker run -d mongo
+```
+
+Add the following environment variable (either in your terminal or IDE):
+
+```
+FIFTYONE_DATABASE_URI=mongodb://localhost
+```
