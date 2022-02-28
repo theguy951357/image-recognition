@@ -20,8 +20,10 @@ def parse_args(args):
 
     parser = argparse.ArgumentParser(description=desc)
 
-    parser.add_argument('-i', '--image_dir', help='Absolute or relative file path of image to process for object recognition.',
+    parser.add_argument('-i', '--image_dir', help='Absolute or relative directory path of images to process for object recognition.',
                         metavar='DIR_PATH', required=False, default='./images/')
+    parser.add_argument('-vi', '--video_dir', help='Absolute or relative directory path of videos to process for object recognition.',
+                        metavar='DIR_PATH', required=False, default='./videos/')
     parser.add_argument('-o', '--out_dir', help='Folder location for output. Default is ./out/',
                         default='./out/', metavar='DIR', required=False)
     parser.add_argument('-v', '--verbose', help='Verbose logging.', action='store_true', required=False, default=False)
