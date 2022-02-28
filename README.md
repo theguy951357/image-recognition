@@ -26,7 +26,7 @@ docker build --no-cache -t object-recognizer:latest .
 
 Then, run it.
 ```
-docker run -it --rm --gpus all -v $(pwd)/images:/app/images -v $(pwd)/out:/app/out object-recognizer:latest
+docker run -it --rm --gpus all -v $(pwd)/images:/app/images -v $(pwd)/videos:/app/videos -v $(pwd)/out:/app/out object-recognizer:latest
 ```
 
 ### CLI
