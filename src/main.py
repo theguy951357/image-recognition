@@ -57,6 +57,7 @@ def ls_tf_devices():
     logger.info(f"TensorFlow version: {tf.__version__}")
 
 
+# noinspection PyBroadException
 def main():
     logger.info('Welcome to YAOR (Yet Another Object Recognizer)!')
     logger.info(f'Loaded with configuration: {config}')
